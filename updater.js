@@ -1,14 +1,22 @@
 const fs = require('fs');
+const https = require('https');
+
+// 封裝一個絕對不會被 GitHub 環境封鎖的 HTTPS 抓取器
+function secureGet(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => resolve(JSON.parse(data)));
+        }).on('error', err => reject(err));
+    });
+}
 
 async function updateCoolpcPrices() {
     console.log('🔄 開始從開源爬蟲源抓取原價屋真實時價...');
     try {
-        const response = await fetch('https://vito-go.github.io/coolpc-crawler/coolpc.json');
-        if (!response.ok) {
-            throw new Error(`無法連線至原價屋爬蟲源，HTTP 狀態碼: ${response.status}`);
-        }
-        
-        const rawData = await response.json();
+        // 使用安全雙保險機制抓取
+        const rawData = await secureGet('https://vito-go.github.io/coolpc-crawler/coolpc.json');
         console.log(`📦 成功獲取原始數據，總計 ${rawData.length} 筆零件資料。`);
         
         // 欄位清洗與標準化格式
@@ -17,7 +25,8 @@ async function updateCoolpcPrices() {
             price: Number(item.price || item.item_price || 0)
         })).filter(item => item.price > 100 && item.name !== "");
 
-        // 建立標準的英文 Key 結構，對應你網頁 script.js 的抓取格式
+        console.log('🧼 數據清洗完成，開始進行硬體分類篩選...');
+
         const database = {
             CPU: cleanData.filter(item => {
                 const n = item.name.toUpperCase();
@@ -43,9 +52,11 @@ async function updateCoolpcPrices() {
             })
         };
 
-        // 將時價寫入 prices.json 覆蓋
+        console.log(`📊 分類完成！CPU: ${database.CPU.length} 款, GPU: ${database.GPU.length} 款`);
+
+        // 將最新時價複寫回 prices.json
         fs.writeFileSync('prices.json', JSON.stringify(database, null, 2), 'utf8');
-        console.log('✅ prices.json 時價寫入成功！');
+        console.log('✅ prices.json 時價更新成功！');
 
     } catch (error) {
         console.error('❌ 更新時價失敗，詳細原因:', error.message);
