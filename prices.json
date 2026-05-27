@@ -1,0 +1,24 @@
+{
+    "CPU": [
+        { "name": "Intel i5-12400F【6核/12緒】(無內顯)", "price": 3590 },
+        { "name": "AMD R5-7500F【6核/12緒】(電競高CP值)", "price": 4990 },
+        { "name": "Intel i5-14400【10核/16緒】(含內顯)", "price": 6800 }
+    ],
+    "GPU": [
+        { "name": "微星 RTX 4060 VENTUS 2X 8G (入門光追)", "price": 9290 },
+        { "name": "華碩 DUAL-RTX4060Ti-O8G-EVO (主流電競)", "price": 12990 },
+        { "name": "技嘉 RTX 4070 SUPER EAGLE 12G (2K順跑)", "price": 21990 }
+    ],
+    "RAM": [
+        { "name": "威剛 16GB(8G*2) DDR4-3200", "price": 1150 },
+        { "name": "金士頓 32GB(16G*2) DDR5-6000 CL30", "price": 3290 }
+    ],
+    "SSD": [
+        { "name": "鎧俠 KIOXIA Exceria G2 1TB/M.2 PCIe", "price": 1850 },
+        { "name": "威剛 ADATA XPG S70 BLADE 2TB/M.2", "price": 3590 }
+    ],
+    "PowerCase": [
+        { "name": "550W 電源 + 視博通機殼 組合價", "price": 2190 },
+        { "name": "海韻 Focus 750W + 君主 Air 903 機殼", "price": 3990 }
+    ]
+}
